@@ -1,0 +1,62 @@
+#!/bin/bash
+
+PROGRAM=$(basename $0)
+
+function usage() {
+  echo "Usage: $PROGRAM [--container container_to_stop_and_remove] [--image image_to_remove]"
+  echo "-------------------------------------------------------------------------------------"
+  echo "Example: $PROGRAM --container dev1 --image dev"
+}
+
+function error() {
+    echo $1
+    echo ""
+    usage
+    exit 1
+}
+
+while true; do
+    case $1 in
+    --container) CONTAINER="$2" ; shift ;;
+    --image) IMAGE="$2" ; shift ;;
+    --dryrun) DEBUG=true ;;
+    --help) usage ; exit 0; shift ;;
+    (--) shift;;
+    (-*) error "$PROGRAM: unrecognized option \"$1\"";;
+    (*) break;;
+    esac
+    shift
+done
+
+if [ ! -z "$CONTAINER" ]
+then
+  CONTAINER_REMOVAL_CMD="docker container stop $CONTAINER && docker container rm $CONTAINER"
+fi
+
+if [ ! -z "$IMAGE" ]
+then
+  IMAGE_REMOVAL_CMD="docker image rm $IMAGE"
+fi
+
+if [ ! -z "$CONTAINER_REMOVAL_CMD" ] && [ ! -z "$IMAGE_REMOVAL_CMD" ]
+then
+  DIVIDER=" && "
+fi
+
+CMD="$CONTAINER_REMOVAL_CMD$DIVIDER$IMAGE_REMOVAL_CMD"
+
+if [ "$DEBUG" = true ] ; then
+    echo "Command to be executed:"
+    echo ""
+    echo "\"$CMD\""
+    exit 0
+fi
+
+if [ -z "$CMD" ]
+then
+  echo "Nothing to do"
+  exit 0
+fi
+
+eval $CMD
+

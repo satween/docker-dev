@@ -1,0 +1,106 @@
+#!/bin/bash
+
+PROGRAM=$(basename $0)
+PROCESS_FILE_REGEX=".proc_*"
+
+usage() {
+  echo ""
+  echo "Usage: $PROGRAM -i user@host [-p port]"
+  echo "    -h | --help  - prints this help"
+  echo "    -p | --port - port for ssh tunnel"
+  echo "    -i | --ip - ip address or host for ssh tunnel"
+  echo "    -c | --cleanup - restores application state"
+  echo "-----------------------------------------------------"
+  echo "Example: $PROGRAM -i dev@127.0.0.1 -p 22"
+}
+
+check_args() {
+  if [ -z "$ssh_host" ]
+  then
+        usage
+        exit 1
+  fi
+
+  if [ -z "$ssh_port" ]
+  then
+        ssh_port=22
+  fi
+}
+
+get_pid_by_lock_file(){
+  tunnel_process_pid=$(pgrep -f $1)
+}
+
+cleanup(){
+  echo "Cleaning up..."
+  tmp_files=$(ls $PROCESS_FILE_REGEX)
+  existing_tunnel_pid=""
+  for value in $tmp_files
+  do
+    get_pid_by_lock_file $value
+    if [ -z "$tunnel_process_pid" ]
+    then
+      echo "Verify that this file could be removed:"
+      rm -i $value
+    else
+      existing_tunnel_pid=$tunnel_process_pid
+    fi
+  done
+  echo ""
+}
+
+check_tunnel (){
+  lock_files_count=$(find . -name "$PROCESS_FILE_REGEX" | wc -l |  grep -o "[0-9]\+")
+
+  if [ $lock_files_count -ge 0 ];
+  then
+    cleanup
+  fi
+}
+
+while true; do
+    case $1 in
+    -i|--ip) ssh_host="$2" ; shift ;;
+    -p|--port) ssh_port="$2" ; shift ;;
+    -h|--help) usage ; exit 0; shift ;;
+    (--) shift;;
+    (-*) echo "$0: error - unrecognized option $1" 1>&2; usage; exit 1;;
+    (*) break;;
+    esac
+    shift
+done
+
+check_args
+check_tunnel
+echo ""
+
+echo "Restarting adb server in container..."
+ssh  $ssh_host -p $ssh_port "source ~/.zshrc && adb kill-server && adb start-server" || exit
+echo ""
+
+echo "Launching ssh tunnel..."
+if [ -z "$existing_tunnel_pid" ]
+then
+  adb kill-server
+  process_uuid=.proc_$(uuidgen)
+  touch $process_uuid
+  ssh -CNf -L5038:localhost:5037 -L27183:localhost:27183 $ssh_host -p $ssh_port $process_uuid
+  adb start-server
+  export ADB_SERVER_SOCKET=tcp:localhost:5038
+  process_id=$(pgrep -f $process_uuid)
+  echo "New ssh tunnel pid: $process_id"
+else
+  process_id=$existing_tunnel_pid
+  echo "Ssh tunnel already exist. pid: $process_id"
+fi
+echo ""
+
+echo "Connecting to the emulator..."
+scrcpy --force-adb-forward
+echo ""
+
+echo "Stopping tunnel..."
+kill $process_id && rm $process_uuid && exit 0
+
+
+

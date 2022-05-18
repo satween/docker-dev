@@ -1,0 +1,13 @@
+base/from.Dockerfile
+base/env.Dockerfile
+base/base.Dockerfile
+base/desktop.Dockerfile
+base/remote-desktop.Dockerfile
+base/user.Dockerfile
+base/user_desktop.Dockerfile
+base/user_env.Dockerfile
+android/env.Dockerfile
+android/user_env.Dockerfile
+android/user_desktop.Dockerfile
+android/user_prepare.Dockerfile
+base/user_launch.Dockerfile

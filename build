@@ -1,0 +1,97 @@
+#!/bin/bash
+
+PROGRAM=$(basename $0)
+
+function usage() {
+  echo "Usage: $PROGRAM --config config_file --name image_name"
+  echo "-------------------------------------------------------------------------------------"
+  echo "Example: $PROGRAM --config dev.conf --name dev"
+}
+
+function error() {
+    echo $1
+    echo ""
+    usage
+    exit 1
+}
+
+check_args() {
+  if [ -z "$CONFIG" ]
+  then
+        error "Error: {config} argument is missed!"
+  fi
+
+  if [ -z "$NAME" ]
+  then
+        error "Error: {name} argument is missed!"
+  fi
+
+  _configLastString=$(cat -e $CONFIG)
+  if [ ${_configLastString: -1} != "$" ]
+  then
+    error "Configuration file \"$CONFIG\" must end with an empty line"
+  fi
+
+
+  lineNumber=0
+  _files=$(cat $CONFIG)
+  for _file in $_files
+  do
+     if [ ! -f "./$_file" ]
+     then
+       error "Invalid configuration file \"$CONFIG\" at line $lineNumber: \"$_file\" not found"
+     fi
+     ((lineNumber=lineNumber+1))
+  done
+}
+
+function cleanup() {
+    rm -f $1
+}
+
+while true; do
+    case $1 in
+    --config) CONFIG="$2" ; shift ;;
+    --name) NAME="$2" ; shift ;;
+    --dryrun) DEBUG=true ;;
+    --help) usage ; exit 0; shift ;;
+    (--) shift;;
+    (-*) error "$PROGRAM: unrecognized option \"$1\"";;
+    (*) break;;
+    esac
+    shift
+done
+
+
+check_args
+
+TMP_DOCKER_FILE="./$(uuidgen).Dockerfile"
+touch $TMP_DOCKER_FILE
+
+cat $CONFIG | while read line
+do
+   echo "Merging from $line"
+   cat $line >> $TMP_DOCKER_FILE
+   echo "" >> $TMP_DOCKER_FILE
+   echo "" >> $TMP_DOCKER_FILE
+done
+
+CMD="docker build -t $NAME - < $TMP_DOCKER_FILE"
+
+ if [ "$DEBUG" = true ] ; then
+     echo "Resulting config:"
+     cat $TMP_DOCKER_FILE
+     echo "Resulting command to execute:"
+     echo "$CMD"
+     exit 0
+ fi
+
+eval $CMD
+
+if [ $? -eq 0 ]; then
+   echo "OK"
+else
+   echo "FAIL"
+fi
+
+echo "Resulting Dockerfile located here: $TMP_DOCKER_FILE"

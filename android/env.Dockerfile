@@ -1,0 +1,9 @@
+ARG ANDROID_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip"
+ARG ANDROID_SDK_DIR="android_sdk"
+ARG ANDROID_SDK_PATH="$HOME_DIR/$ANDROID_SDK_DIR"
+ARG CMD_LINE_BINARIES="$ANDROID_SDK_PATH/cmdline-tools/latest/bin"
+ARG PLATFORM_TOOLS_BINARIES="$ANDROID_SDK_PATH/platform-tools"
+ARG ANDROID_TOOLS_BINARIES="$ANDROID_SDK_PATH/tools"
+
+ARG EMULATOR_OS_VERSION="android29"
+ARG ANDROID_SCRIPTS_DIR="$HOME_DIR/.android/scripts"

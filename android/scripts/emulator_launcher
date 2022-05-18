@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export ADB_SERVER_SOCKET=tcp:localhost:5038
+scrcpy --force-adb-forward

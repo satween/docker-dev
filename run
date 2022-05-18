@@ -1,0 +1,78 @@
+#!/bin/bash
+
+PROGRAM=$(basename $0)
+
+function usage() {
+  echo "Usage: $PROGRAM --ip ip --prefix port_prefix --image image_name --name container_name"
+  echo "-------------------------------------------------------------------------------------"
+  echo "Example: $PROGRAM --ip dev@127.0.0.1 --prefix 99 --image dev --name dev1"
+}
+
+function error() {
+    echo $1
+    echo ""
+    usage
+    exit 1
+}
+
+check_args() {
+  if [ -z "$MACHINE_IP" ]
+  then
+        error "Error: {ip} argument is missed!"
+  fi
+
+  if [ -z "$PORT_PREFIX" ]
+  then
+        error "Error: {prefix} argument is missed!"
+  fi
+
+  if [ -z "$IMAGE" ]
+  then
+        error "Error: {image} argument is missed!"
+  fi
+
+  if [ -z "$NAME" ]
+  then
+        error "Error: {name} argument is missed!"
+  fi
+}
+
+while true; do
+    case $1 in
+    --ip) MACHINE_IP="$2" ; shift ;;
+    --prefix) PORT_PREFIX="$2" ; shift ;;
+    --image) IMAGE="$2" ; shift ;;
+    --name) NAME="$2" ; shift ;;
+    --dryrun) DEBUG=true ;;
+    --help) usage ; exit 0; shift ;;
+    (--) shift;;
+    (-*) error "$PROGRAM: unrecognized option \"$1\"";;
+    (*) break;;
+    esac
+    shift
+done
+
+check_args
+
+CMD="docker run --privileged -it -p $MACHINE_IP:${PORT_PREFIX}99:9999 \
+-p $MACHINE_IP:${PORT_PREFIX}98:9998 \
+-p $MACHINE_IP:${PORT_PREFIX}97:9997 \
+-p $MACHINE_IP:${PORT_PREFIX}96:9996 \
+-p $MACHINE_IP:${PORT_PREFIX}95:9995 \
+-p $MACHINE_IP:${PORT_PREFIX}94:9994 \
+-p $MACHINE_IP:${PORT_PREFIX}93:9993 \
+-p $MACHINE_IP:${PORT_PREFIX}92:9992 \
+-p $MACHINE_IP:${PORT_PREFIX}91:9991 \
+-p $MACHINE_IP:${PORT_PREFIX}90:9990 \
+-p $MACHINE_IP:${PORT_PREFIX}22:22 \
+--gpus all \
+--device /dev/kvm \
+--name $NAME \
+$IMAGE"
+
+ if [ "$DEBUG" = true ] ; then
+     echo "$CMD"
+     exit 0
+ fi
+
+eval $CMD
