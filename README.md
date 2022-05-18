@@ -1,4 +1,4 @@
-# Docker Environments
+# Docker Remote Desktop Environments
 
 ## How it works?
 
@@ -58,3 +58,19 @@ details
 
 Create file that describes how to combine configuration parts. You can either add just a few steps
 like in [android](./configs/android) script or even start a container from different source like in [ml](./configs/ml).
+
+### Intellij IDEA support
+
+This container did not install any IDE. However Intellij IDEA IDE was tested
+All existing containers contains [Jetbrains Toolbox](https://www.jetbrains.com/toolbox-app/) installation script that
+could be executed from container with command:
+
+```bash 
+bash ~/scripts/download_jb_toolbox.sh
+```
+
+But if your client machine is Mac OS based you might face with problem that `CMD` key do not match with `Ctrl` key of
+container's, so all IDE keymap is broken.
+
+Check [this](https://github.com/satween/MacOsLinuxRDPBindings)
+repository to fix keymap bindings
