@@ -5,7 +5,7 @@
 This repository contains docker containers that able to run IDE (or any other GUI software)
 
 Running GUI inside docker container is not the case that docker was build for.
-However, ease of configuration and community support makes it much more convenient that running and supporting
+However, ease of configuration and community support makes it much more convenient than running and supporting
 virtual machines.
 
 ## Setup
