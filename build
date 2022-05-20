@@ -76,7 +76,7 @@ do
    echo "" >> $TMP_DOCKER_FILE
 done
 
-CMD="docker build -t $NAME - < $TMP_DOCKER_FILE"
+CMD="docker build -t $NAME -f $TMP_DOCKER_FILE ."
 
  if [ "$DEBUG" = true ] ; then
      echo "Resulting config:"
