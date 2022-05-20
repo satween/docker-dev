@@ -37,8 +37,6 @@ RUN echo "#!/bin/bash\n \
 $ANDROID_SDK_PATH/emulator/emulator -avd $EMULATOR_OS_VERSION \
 " > launch_emulator.sh && chmod +x launch_emulator.sh
 
-RUN echo "echo $PASS_USER | sudo -S sudo service ssh start " >> run.sh
-
 # PREPARATION SCRIPT
 RUN echo "#!/bin/bash\n\
 bash $SCRIPTS_DIR/download_cmdtools.sh \n\
