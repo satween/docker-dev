@@ -6,6 +6,7 @@ RUN apt-get update && \
     add-apt-repository -y universe
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
+      apt-utils \
       curl \
       unzip \
       openjdk-11-jdk \
