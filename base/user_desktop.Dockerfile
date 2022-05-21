@@ -28,6 +28,7 @@ RUN echo "\
 
 # LAUNCH SCRIPT
 RUN echo "\
+bash vnc_runner & \n\
 echo $PASS_USER | sudo -S sudo service ssh start\n\
 echo $PASS_USER | sudo -S service xrdp restart\n\
 echo $PASS_USER | sudo -S chmod 777 /dev/kvm\n\
