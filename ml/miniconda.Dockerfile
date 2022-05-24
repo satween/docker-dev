@@ -10,7 +10,7 @@ ARG MINICONDA_DIR=$HOME_DIR/miniconda
 ARG CONDA=$HOME_DIR/miniconda/bin/conda
 ARG PIP=pip
 
-RUN echo 'export PATH=$MINICONDA_DIR/bin:$PATH' >> .zshrc
+RUN echo "export PATH=$MINICONDA_DIR/bin:$PATH" >> .zshrc
 
 RUN $CONDA install -y pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch && \
     $CONDA install -y pandas && \
