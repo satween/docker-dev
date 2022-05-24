@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
       openjdk-11-jdk \
       wget \
       vim \
+      psmisc \
       zsh \
       git \
       nano \
