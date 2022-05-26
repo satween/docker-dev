@@ -4,7 +4,7 @@ base/base.Dockerfile
 base/desktop.Dockerfile
 base/remote-desktop.Dockerfile
 base/user.Dockerfile
-base/vncsetup.Dockerfile
 base/user_desktop.Dockerfile
 base/user_env.Dockerfile
+base/vncsetup.Dockerfile
 base/user_launch.Dockerfile
