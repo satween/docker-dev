@@ -26,11 +26,11 @@ RUN $PIP install tensorflow && \
   $PIP install tensorflow-addons
 
 
-RUN echo "\#!/bin/bash \n\
-    CONFIG=\$(jupyter notebook --generate-config  -y |  sed 's/Writing default config to: //') \n\
-    echo \$CONFIG \n\
-    echo \"c.NotebookApp.allow_remote_access = True\" >> \$CONFIG \n\
-    echo \"c.NotebookApp.ip = '*'\" >> \$CONFIG \n\
-    echo \"c.NotebookApp.token=''\" >> \$CONFIG \n\
-    echo \"c.NotebookApp.password=''\" >> \$CONFIG \n\
+RUN echo "#!/bin/bash \n\
+CONFIG=\$(jupyter notebook --generate-config  -y |  sed 's/Writing default config to: //') \n\
+echo \$CONFIG \n\
+echo \"c.NotebookApp.allow_remote_access = True\" >> \$CONFIG \n\
+echo \"c.NotebookApp.ip = '*'\" >> \$CONFIG \n\
+echo \"c.NotebookApp.token=''\" >> \$CONFIG \n\
+echo \"c.NotebookApp.password=''\" >> \$CONFIG \n\
 " > $SCRIPTS_DIR/setup_jupyter.sh
