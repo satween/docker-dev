@@ -1,6 +1,3 @@
-
-
-# VNC----------------------------------------------------------------------------------------------------
 USER root
 
 RUN mkdir -p $ROOT_HOME_DIR/.vnc && touch $ROOT_HOME_DIR/.Xresources
@@ -27,5 +24,3 @@ RUN echo "$PASS_VNC" | vncpasswd -f > $HOME_DIR/.vnc/passwd && \
     echo "vncserver -localhost no -rfbPort ${PORT_VNC}" >> vnc_runner.sh && chmod 500 vnc_runner.sh
 
 RUN echo "bash vnc_runner.sh & \n" >> run.sh
-
-# /VNC----------------------------------------------------------------------------------------------------
