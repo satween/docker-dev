@@ -21,6 +21,11 @@ check_args() {
         error "Error: {config} argument is missed!"
   fi
 
+  if [ ! -f "$CONFIG" ]
+    then
+          error "Error: $CONFIG file does not exist!"
+  fi
+
   if [ -z "$NAME" ]
   then
         error "Error: {name} argument is missed!"
@@ -71,6 +76,7 @@ touch $TMP_DOCKER_FILE
 cat $CONFIG | while read line
 do
    echo "Merging from $line"
+   echo "# [ $line ]--------------------------------------------------------" >> $TMP_DOCKER_FILE
    cat $line >> $TMP_DOCKER_FILE
    echo "" >> $TMP_DOCKER_FILE
    echo "" >> $TMP_DOCKER_FILE

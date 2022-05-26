@@ -5,9 +5,6 @@ WORKDIR $HOME_DIR
 RUN sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 RUN cat .zshrc.pre-oh-my-zsh >> .zshrc
 
-# SCRIPTS
-RUN mkdir -p $SCRIPTS_DIR
-
 # DOWNLOADING TOOLBOX
 RUN echo "#!/bin/bash\n \
 wget $JETBRAINS_TOOLBOX_URL -O toolbox.tar.gz\n\
