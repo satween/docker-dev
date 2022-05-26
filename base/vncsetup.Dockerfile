@@ -9,6 +9,7 @@ xrdb $ROOT_HOME_DIR/.Xresources \n\
 startxfce4 & \n" > $ROOT_HOME_DIR/.vnc/xstartup && chmod +x $ROOT_HOME_DIR/.vnc/xstartup
 RUN echo "$PASS_VNC" | vncpasswd -f >> $ROOT_HOME_DIR/.vnc/passwd && chmod 600 $ROOT_HOME_DIR/.vnc/passwd
 
+RUN sed -i 's/\[Xorg\]/#\[Xorg\]/' /etc/xrdp/xrdp.ini
 
 USER $USER
 WORKDIR $HOME_DIR
